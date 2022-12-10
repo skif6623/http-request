@@ -1,44 +1,37 @@
+import toast, { Toaster } from 'react-hot-toast';
 import { fetchDogByBreed } from 'api';
 import { Component } from 'react';
 import { BreedSelect } from './BreedSelect/BreedSelect';
+import { MyLoader } from './ContentLoader/ContentLoader';
 import { Dog } from './Dog/Dog';
-import ClimbingBoxLoader from 'react-spinners/ClimbingBoxLoader';
 
 export class App extends Component {
   state = {
     dog: null,
-    error: null,
     isLoading: false,
   };
 
   selectedBreed = async breedId => {
     try {
-      this.setState({ isLoading: true, error: null });
+      this.setState({ isLoading: true });
       const dog = await fetchDogByBreed(breedId);
       this.setState({
         dog,
       });
     } catch (error) {
-      this.setState({ error: 'Хуй тобі а не собачка попрошайка їбана' });
+      toast.error('Хуй тобі а не собачка попрошайка їбана');
     } finally {
       this.setState({ isLoading: false });
     }
   };
   render() {
-    const { dog, error, isLoading } = this.state;
+    const { dog, isLoading } = this.state;
     return (
       <div>
         <BreedSelect onSelect={this.selectedBreed} />
         {dog && !isLoading && <Dog dog={dog} />}
-        {error && <p>{error}</p>}
-        {isLoading && (
-          <ClimbingBoxLoader
-            loading={isLoading}
-            size={50}
-            aria-label="Loading Spinner"
-            data-testid="loader"
-          />
-        )}
+        {isLoading && <MyLoader />}
+        <Toaster />
       </div>
     );
   }
