@@ -6,7 +6,7 @@ import { MyLoader } from './ContentLoader/ContentLoader';
 import { Dog } from './Dog/Dog';
 
 export const App = () => {
-  const [dog, setDog] = useState(0);
+  const [dog, setDog] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const selectedBreed = async breedId => {
