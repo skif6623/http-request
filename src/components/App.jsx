@@ -1,38 +1,31 @@
+import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { fetchDogByBreed } from 'api';
-import { Component } from 'react';
 import { BreedSelect } from './BreedSelect/BreedSelect';
 import { MyLoader } from './ContentLoader/ContentLoader';
 import { Dog } from './Dog/Dog';
 
-export class App extends Component {
-  state = {
-    dog: null,
-    isLoading: false,
-  };
+export const App = () => {
+  const [dog, setDog] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
-  selectedBreed = async breedId => {
+  const selectedBreed = async breedId => {
     try {
-      this.setState({ isLoading: true });
+      setIsLoading(true);
       const dog = await fetchDogByBreed(breedId);
-      this.setState({
-        dog,
-      });
+      setDog(dog);
     } catch (error) {
-      toast.error('Хуй тобі а не собачка попрошайка їбана');
+      toast.error('Не вийшло знайти собачку');
     } finally {
-      this.setState({ isLoading: false });
+      setIsLoading(false);
     }
   };
-  render() {
-    const { dog, isLoading } = this.state;
-    return (
-      <div>
-        <BreedSelect onSelect={this.selectedBreed} />
-        {dog && !isLoading && <Dog dog={dog} />}
-        {isLoading && <MyLoader />}
-        <Toaster />
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <BreedSelect onSelect={selectedBreed} />
+      {dog && !isLoading && <Dog dog={dog} />}
+      {isLoading && <MyLoader />}
+      <Toaster />
+    </div>
+  );
+};
